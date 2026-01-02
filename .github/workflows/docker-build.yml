@@ -1,30 +1,62 @@
-name: 도커 도시락 포장 연습 # 워크플로우 이름
+name: 도커 도시락 배달하기 # 워크플로우 이름
 
-# 언제 일할까? : 메인(main) 가지에 코드를 밀어넣을(push) 때!
 on: # 워크플로우 트리거(메인(main) 가지에 코드를 밀어넣을(push) 때!)
   push: # 워크플로우 트리거 종류(메인(main) 가지에 코드를 밀어넣을(push) 때!)
     branches: [ "main" ] # 워크플로우 트리거 종류(메인(main) 가지에 코드를 밀어넣을(push) 때!)
 
-# 무슨 일을 할까?
 jobs: # 워크플로우 작업(메인(main) 가지에 코드를 밀어넣을(push) 때!)
-  build-test: # 워크플로우 작업 이름(메인(main) 가지에 코드를 밀어넣을(push) 때!)
-    runs-on: ubuntu-latest  # "최신 리눅스 컴퓨터를 하나 빌려줘" # 워크플로우 작업 실행 환경
-    
+  build-push: # 워크플로우 작업 이름(메인(main) 가지에 코드를 밀어넣을(push) 때!)
+    runs-on: ubuntu-latest # 워크플로우 작업 실행 환경
     steps: # 워크플로우 작업 단계(메인(main) 가지에 코드를 밀어넣을(push) 때!)
-    # 1단계: 코드 가져오기
-    - name: 코드 체크아웃 (내 코드 가져오기) # 워크플로우 작업 단계 이름
+    # 1. 코드 가져오기
+    - name: 코드 체크아웃 # 워크플로우 작업 단계 이름
       uses: actions/checkout@v3 # 워크플로우 작업 단계 사용 액션
 
-    # 2단계: 도커 도시락이 잘 싸지는지(빌드) 확인하기
-    # - name: 도커 이미지 만들어보기 # 워크플로우 작업 단계 이름
-    #   run: docker build . -t my-web-test:v1 # 워크플로우 작업 단계 실행 명령
+    # 2. 도커 허브에 로그인하기 (비밀 금고에서 열쇠 꺼내씀!)
+    - name: 도커 허브 로그인 # 워크플로우 작업 단계 이름
+      uses: docker/login-action@v2 # 워크플로우 작업 단계 사용 액션
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}  # 비밀 아이디 # 워크플로우 작업 단계 실행 명령
+        password: ${{ secrets.DOCKER_PASSWORD }}  # 비밀 비번 # 워크플로우 작업 단계 실행 명령    
 
-    - name: 도커 이미지 만들어보기
-      # "로봇아, my-web 방으로 들어가서 명령어를 실행해!"
-      working-directory: ./my-web
-      run: docker build . -t my-web-test:v1
+    # 3. 도시락 싸서 냉장고에 넣기 (Build & Push)
+    - name: 빌드하고 푸시하기
+      # 아까 배운 working-directory 기억나죠?
+      working-directory: ./my-web # 워크플로우 작업 단계 실행 명령
+      run: | # 워크플로우 작업 단계 실행 명령 파이프(|) 연결 명령 (여러 명령어를 한 줄에 실행)
+        docker build . -t ${{ secrets.DOCKER_USERNAME }}/my-web:v1
+        docker push ${{ secrets.DOCKER_USERNAME }}/my-web:v1
+
+
+
+# ASIS
+# name: 도커 도시락 포장 연습 # 워크플로우 이름
+
+# # 언제 일할까? : 메인(main) 가지에 코드를 밀어넣을(push) 때!
+# on: # 워크플로우 트리거(메인(main) 가지에 코드를 밀어넣을(push) 때!)
+#   push: # 워크플로우 트리거 종류(메인(main) 가지에 코드를 밀어넣을(push) 때!)
+#     branches: [ "main" ] # 워크플로우 트리거 종류(메인(main) 가지에 코드를 밀어넣을(push) 때!)
+
+# # 무슨 일을 할까?
+# jobs: # 워크플로우 작업(메인(main) 가지에 코드를 밀어넣을(push) 때!)
+#   build-test: # 워크플로우 작업 이름(메인(main) 가지에 코드를 밀어넣을(push) 때!)
+#     runs-on: ubuntu-latest  # "최신 리눅스 컴퓨터를 하나 빌려줘" # 워크플로우 작업 실행 환경
+    
+#     steps: # 워크플로우 작업 단계(메인(main) 가지에 코드를 밀어넣을(push) 때!)
+#     # 1단계: 코드 가져오기
+#     - name: 코드 체크아웃 (내 코드 가져오기) # 워크플로우 작업 단계 이름
+#       uses: actions/checkout@v3 # 워크플로우 작업 단계 사용 액션
+
+#     # 2단계: 도커 도시락이 잘 싸지는지(빌드) 확인하기
+#     # - name: 도커 이미지 만들어보기 # 워크플로우 작업 단계 이름
+#     #   run: docker build . -t my-web-test:v1 # 워크플로우 작업 단계 실행 명령
+
+#     - name: 도커 이미지 만들어보기
+#       # "로봇아, my-web 방으로 들어가서 명령어를 실행해!"
+#       working-directory: ./my-web
+#       run: docker build . -t my-web-test:v1
 
       
-    # 3단계: 결과 보고
-    - name: 성공 메시지 # 워크플로우 작업 단계 이름
-      run: echo "대장님! 도커 포장에 성공했습니다! 🍱" # 워크플로우 작업 단계 실행 명령 
+#     # 3단계: 결과 보고
+#     - name: 성공 메시지 # 워크플로우 작업 단계 이름
+#       run: echo "대장님! 도커 포장에 성공했습니다! 🍱" # 워크플로우 작업 단계 실행 명령 
