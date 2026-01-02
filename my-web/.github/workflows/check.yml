@@ -1,0 +1,9 @@
+name: 내 코드 검사기
+on: [push]  # 내가 코드를 올릴 때마다
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 인사하기
+        run: echo "코드가 안전하게 도착했습니다! 검사 끝!"
