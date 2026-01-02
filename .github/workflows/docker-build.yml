@@ -16,8 +16,14 @@ jobs: # 워크플로우 작업(메인(main) 가지에 코드를 밀어넣을(pus
       uses: actions/checkout@v3 # 워크플로우 작업 단계 사용 액션
 
     # 2단계: 도커 도시락이 잘 싸지는지(빌드) 확인하기
-    - name: 도커 이미지 만들어보기 # 워크플로우 작업 단계 이름
-      run: docker build . -t my-web-test:v1 # 워크플로우 작업 단계 실행 명령
+    # - name: 도커 이미지 만들어보기 # 워크플로우 작업 단계 이름
+    #   run: docker build . -t my-web-test:v1 # 워크플로우 작업 단계 실행 명령
+
+    - name: 도커 이미지 만들어보기
+      # "로봇아, my-web 방으로 들어가서 명령어를 실행해!"
+      working-directory: ./my-web
+      run: docker build . -t my-web-test:v1
+
       
     # 3단계: 결과 보고
     - name: 성공 메시지 # 워크플로우 작업 단계 이름
