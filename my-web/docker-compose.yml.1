@@ -1,0 +1,11 @@
+version: '3.8' # 설계도 버전
+
+services: # 서비스(컨테이너) 목록
+  my-web-server: # 1번 프로그램 이름(내 마음대로)
+    image: nginx:latest # Nginx 서비스 이미지를 사용할 수 있도록 지정
+    ports: # 서비스 포트
+      - "8080:80" # 서비스 포트 매핑(내 컴퓨터 포트 : 도커 안 포트)
+    volumes: # 서비스 볼륨
+      - ./:/usr/share/nginx/html # 서비스 볼륨 매핑(내 폴더 : 도커 안 폴더)
+    restart: always # 꺼지면 자동으로 다시 켜줘!
+# 위 내용은 지난번 터미널에서 실행한 docker run -d -p 8080:80 -v $(pwd):/usr/share/nginx/html nginx 을 docker-compose.yml 파일로 만든 것

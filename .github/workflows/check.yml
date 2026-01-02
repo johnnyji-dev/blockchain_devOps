@@ -1,9 +1,9 @@
-name: 내 코드 검사기
-on: [push]  # 내가 코드를 올릴 때마다
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: 인사하기
-        run: echo "코드가 안전하게 도착했습니다! 검사 끝!"
+name: 내 코드 검사기 # 워크플로우 이름
+on: [push] # 워크플로우 트리거(내가 코드를 올릴 때마다)
+jobs: # 워크플로우 작업(내가 코드를 올릴 때마다)
+  test: # 워크플로우 작업 이름
+    runs-on: ubuntu-latest # 워크플로우 작업 실행 환경
+    steps: # 워크플로우 작업 단계(내가 코드를 올릴 때마다)
+      - uses: actions/checkout@v2 # 워크플로우 작업 단계 사용 액션
+      - name: 인사하기 # 워크플로우 작업 단계 이름
+        run: echo "코드가 안전하게 도착했습니다! 검사 끝!" # 워크플로우 작업 단계 실행 명령
